@@ -41,8 +41,33 @@ message(STATUS "Building xtensor-io v${${PROJECT_NAME}_VERSION}")
 # Dependencies
 # ============
 
-find_package(xtensor 0.20.5 REQUIRED)
-find_package(xtl 0.6.4 REQUIRED)
+set(xtensor_REQUIRED_VERSION 0.20.5)
+if(TARGET xtensor)
+  set(xtensor_VERSION ${XTENSOR_VERSION_MAJOR}.${XTENSOR_VERSION_MINOR}.${XTENSOR_VERSION_PATCH})
+  # Note: This is not SEMVER compatible comparison
+  if( NOT ${xtensor_VERSION} VERSION_GREATER_EQUAL ${xtensor_REQUIRED_VERSION})
+    message(ERROR "Mismatch xtensor versions. Found '${xtensor_VERSION}' but requires: '${xtensor_REQUIRED_VERSION}'")
+  else()
+    message(STATUS "Found xtensor v${xtensor_VERSION}")
+  endif()
+else()
+  find_package(xtensor ${xtensor_REQUIRED_VERSION} REQUIRED)
+  message(STATUS "Found xtensor: ${xtensor_INCLUDE_DIRS}/xsimd")
+endif()
+
+set(xtl_REQUIRED_VERSION 0.6.4)
+if(TARGET xtl)
+  set(xtl_VERSION ${XTL_VERSION_MAJOR}.${XTL_VERSION_MINOR}.${XTL_VERSION_PATCH})
+  # Note: This is not SEMVER compatible comparison
+  if( NOT ${xtl_VERSION} VERSION_GREATER_EQUAL ${xtl_REQUIRED_VERSION})
+    message(ERROR "Mismatch xtl versions. Found '${xtl_VERSION}' but requires: '${xtl_REQUIRED_VERSION}'")
+  else()
+    message(STATUS "Found xtl v${xtl_VERSION}")
+  endif()
+else()
+  find_package(xtl ${xtl_REQUIRED_VERSION} REQUIRED)
+  message(STATUS "Found xtl: ${xtl_INCLUDE_DIRS}/xtl")
+endif()
 
 message(STATUS "Found xtensor: ${xtensor_INCLUDE_DIRS}/xtensor")
 
